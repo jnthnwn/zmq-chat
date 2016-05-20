@@ -7,10 +7,9 @@ def main():
   client_sock.bind('tcp://*:8888')
   
   while True:
-    parts = client_sock.recv_multipart()
-    print('received msg: {}'.format(str(parts)))
-    client_sock.send_multipart(parts)
-    print('sent reply: {}'.format(parts))
+    identity, msg = [s.decode() for s in client_sock.recv_multipart()]
+    print('{}: {}'.format(identity, msg))
+    client_sock.send(b'\x00')
 
 
 if '__main__' == __name__:
