@@ -7,7 +7,8 @@ def main():
   client_sock.bind('tcp://*:8888')
   
   while True:
-    identity, msg = [s.decode() for s in client_sock.recv_multipart()]
+    parts = client_sock.recv_multipart()
+    identity, msg = [s.decode() for s in parts]
     print('{}: {}'.format(identity, msg))
     client_sock.send(b'\x00')
 
