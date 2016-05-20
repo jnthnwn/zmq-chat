@@ -10,8 +10,7 @@ def main():
   while True:
     msg = input('> ')
     parts = [identity, msg]
-    parts = [bytes(part, 'utf-8') for part in parts]
-    chatroom_sock.send_multipart(parts)
+    chatroom_sock.send_multipart([bytes(part, 'utf-8') for part in parts])
     print('sent msg: {}'.format(parts))
     reply = chatroom_sock.recv()
     print('received reply: {}'.format(str(reply)))
