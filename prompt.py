@@ -13,7 +13,7 @@ def main():
     parts = [bytes(part, 'utf-8') for part in parts]
     chatroom_sock.send_multipart(parts)
     print('sent msg: {}'.format(parts))
-    reply = chatroom_sock.recv_multipart()
+    reply = chatroom_sock.recv()
     print('received reply: {}'.format(str(reply)))
 
 
