@@ -1,8 +1,11 @@
+import argparse
 import sys
 import zmq
 
 
 def main():
+  args = parse_args()
+
   identity = sys.argv[1]
   ctx = zmq.Context()
   chatroom_sock = ctx.socket(zmq.REQ)
@@ -27,6 +30,10 @@ def main():
       chatroom_sock = ctx.socket(zmq.REQ)
       chatroom_sock.connect('tcp://localhost:8888')
       poller.register(chatroom_sock, zmq.POLLIN)
+
+
+def parse_args():
+  pass
 
 
 if '__main__' == __name__:
