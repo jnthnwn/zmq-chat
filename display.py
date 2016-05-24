@@ -1,5 +1,5 @@
-import zmq
 import sys
+import zmq
 
 
 def main():
