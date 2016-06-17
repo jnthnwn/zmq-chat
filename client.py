@@ -6,10 +6,12 @@ import zmq
 def main():
   args = parse_args()
 
-  identity = sys.argv[1]
+  identity = args.username
+  hostname = args.hostname
+  port = args.port
   ctx = zmq.Context()
   chatroom_sock = ctx.socket(zmq.REQ)
-  chatroom_sock.connect('tcp://localhost:8888')
+  chatroom_sock.connect('tcp://{}:{}'.format(hostname, port)
   poller = zmq.Poller()
   poller.register(chatroom_sock, zmq.POLLIN)
 
@@ -28,12 +30,22 @@ def main():
       chatroom_sock.close()
       poller.unregister(chatroom_sock)
       chatroom_sock = ctx.socket(zmq.REQ)
-      chatroom_sock.connect('tcp://localhost:8888')
+      chatroom_sock.connect('tcp://{}:{}'.format(hostname, port))
       poller.register(chatroom_sock, zmq.POLLIN)
 
 
 def parse_args():
-  pass
+  parser = argparse.ArgumentParser(description='Run a chat client')
+  parser.add_argument('hostname',
+          type=str,
+          help='hostname of the chat server')
+  parser.add_argument('port',
+          type=str,
+          help='port used for the chat server')
+  # maybe make selection of username interactive
+  parser.add_argument('username',
+          type=str,
+          help='your preferred username')
 
 
 if '__main__' == __name__:
