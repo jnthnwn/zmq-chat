@@ -46,15 +46,9 @@ class ZMQChatServer(object):
 def parse_args():
     parser = argparse.ArgumentParser(description='Run the chat server')
 
-    parser.add_argument('chat_interface',
-                        type=str,
-                        help='name of interface for chat messages')
     parser.add_argument('chat_port',
                         type=str,
                         help='port to expose for chat messages')
-    parser.add_argument('display_interface',
-                        type=str,
-                        help='name of interface for display messages')
     parser.add_argument('display_port',
                         type=str,
                         help='port to expose for display messages')
@@ -64,6 +58,5 @@ def parse_args():
 
 if '__main__' == __name__:
     args = parse_args()
-    server = ZMQChatServer(args.chat_interface, args.chat_port,
-                           args.display_interface, args.display_port)
+    server = ZMQChatServer('*', args.chat_port, '*', args.display_port)
     server.start_main_loop()
