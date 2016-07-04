@@ -28,7 +28,7 @@ class ZMQChatClient(object):
     def register_with_poller(self):
         self.poller.register(self.chat_sock, zmq.POLLIN)
 
-    def get_message(self):
+    def prompt_for_message(self):
         return input('> ')
 
     def send_message(self, msg):
@@ -47,7 +47,7 @@ class ZMQChatClient(object):
         self.register_with_poller()
 
         while True:
-            msg = self.get_message()
+            msg = self.prompt_for_message()
             self.send_message(msg)
             if self.has_message():
                 reply = self.get_reply()
