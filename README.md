@@ -26,3 +26,5 @@ Get the display running with:
 python3 display.py localhost 8889
 ```
 
+And you'll be able to do this:
+![Chat client screenshot](/images/zmq_chat_screenshot.png)
