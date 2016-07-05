@@ -13,17 +13,17 @@ Get the server running with:
 git clone https://github.com/jnthnwn/zmq_chat.git
 cd zmq_chat
 pip install -r requirements.txt
-python3 server.py 8888 8889
+python3 server.py <chat_port> <display_port>
 ```
 
 Get the client running with:
 ```
-python3 client.py localhost 8888 testuser
+python3 client.py <server_host> <chat_port> <username>
 ```
 
 Get the display running with:
 ```
-python3 display.py localhost 8889
+python3 display.py <server_host> <display_port>
 ```
 
 And you'll be able to do this:
