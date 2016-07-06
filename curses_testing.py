@@ -6,28 +6,38 @@ def main(stdscr):
     # create a colour pairing to reference later with '1'
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     # hide the cursor from being displayed
-    curses.curs_set(0)
-    # set up a window that takes up the bottom half of the screen
-    editwin = curses.newwin(curses.LINES//2, curses.COLS, curses.LINES//2, 0)
+    # curses.curs_set(0)
+    curses.echo()
 
-    # keep doing this for three key strokes
-    for i in range(3):
-        # start with a blank screen
-        stdscr.clear()
-        # print the counter to the screen
-        stdscr.addstr(str(i))
-        # update the screen contents
-        stdscr.refresh()
+    # set up a window that takes up the top half of the screen
+    # and a window that takes up the bottom half
+    topwin = curses.newwin(curses.LINES-3, curses.COLS, 0, 0)
+    bottomwin = curses.newwin(3, curses.COLS, curses.LINES-3, 0)
 
-        # associate the colour pair above with the 'bottom half' window
-        editwin.bkgd(' ', curses.color_pair(1))
-        # draw a box in it using the nice default chars
-        editwin.box(0, 0)
-        # editwin.addstr(0, 0, str(dir(editwin)), curses.color_pair(1))
-        editwin.refresh()
+    # update the screen contents
+    stdscr.refresh()
 
-        # wait for user to press key
-        stdscr.getkey()
+    # associate the colour pair above with the 'top half' window
+    topwin.bkgd(' ', curses.color_pair(1))
+    # draw a box in it using the nice default chars
+    topwin.box(0, 0)
+    topwin.refresh()
+
+    # do similarly for the bottom window
+    bottomwin.bkgd(' ', curses.color_pair(1))
+    while True:
+        bottomwin.clear()
+        bottomwin.box(0, 0)
+        bottomwin.move(1, 1)
+        s = bottomwin.getstr()
+        topwin.clear()
+        topwin.addstr(1, 1, s)
+        topwin.box(0, 0)
+        topwin.refresh()
+        bottomwin.refresh()
+
+    # wait for user to press key
+    stdscr.getkey()
 
 '''
 Puts a wrapper around a callable that will create a window object,
