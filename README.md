@@ -10,8 +10,8 @@ for the client text input and display. In the meantime...
 
 Get the server running with:
 ```
-git clone https://github.com/jnthnwn/zmq_chat.git
-cd zmq_chat
+git clone https://github.com/jnthnwn/zmq-chat.git
+cd zmq-chat
 pip install -r requirements.txt
 python3 server.py <chat_port> <display_port>
 ```
