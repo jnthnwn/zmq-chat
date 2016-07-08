@@ -1,16 +1,18 @@
 import argparse
 import sys
+import threading
 import zmq
 
 
 class ZMQChatClient(object):
 
-    def __init__(self, username, server_host, server_port):
+    def __init__(self, username, server_host, server_port, chat_pipe):
         self.username = username
         self.server_host = server_host
         self.server_port = server_port
         self.context = zmq.Context()
         self.chat_sock = None
+        self.chat_pipe = chat_pipe
         self.poller = zmq.Poller()
 
     def connect_to_server(self):
@@ -29,7 +31,7 @@ class ZMQChatClient(object):
         self.poller.register(self.chat_sock, zmq.POLLIN)
 
     def prompt_for_message(self):
-        return input('> ')
+        return self.chat_pipe.recv_string()
 
     def send_message(self, msg):
         parts = [self.username, msg]
@@ -54,6 +56,10 @@ class ZMQChatClient(object):
             else:
                 self.reconnect_to_server()
 
+    def run(self):
+        thread = threading.Thread(target=self.start_main_loop)
+        thread.start()
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run a chat client')
@@ -74,5 +80,15 @@ def parse_args():
 
 if '__main__' == __name__:
     args = parse_args()
-    client = ZMQChatClient(args.username, args.hostname, args.port)
-    client.start_main_loop()
+    receiver = zmq.Context().instance().socket(zmq.PAIR)
+    receiver.bind("inproc://clientchat")
+    sender = zmq.Context().instance().socket(zmq.PAIR)
+    sender.connect("inproc://clientchat")
+    client = ClientChat(args.username, args.hostname, args.port, receiver)
+    # client.start_main_loop()
+    client.run()
+
+
+    while True:
+        s = input('> ')
+        sender.send_string(s)
