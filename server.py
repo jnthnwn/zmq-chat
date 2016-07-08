@@ -2,7 +2,7 @@ import argparse
 import zmq
 
 
-class ZMQChatServer(object):
+class Server(object):
 
     def __init__(self, chat_interface, chat_port, display_interface, display_port):
         self.chat_interface = chat_interface
@@ -58,5 +58,5 @@ def parse_args():
 
 if '__main__' == __name__:
     args = parse_args()
-    server = ZMQChatServer('*', args.chat_port, '*', args.display_port)
+    server = Server('*', args.chat_port, '*', args.display_port)
     server.start_main_loop()

@@ -3,7 +3,7 @@ import sys
 import zmq
 
 
-class ZMQChatClient(object):
+class ClientChat(object):
 
     def __init__(self, username, server_host, server_port):
         self.username = username
@@ -74,5 +74,5 @@ def parse_args():
 
 if '__main__' == __name__:
     args = parse_args()
-    client = ZMQChatClient(args.username, args.hostname, args.port)
+    client = ClientChat(args.username, args.hostname, args.port)
     client.start_main_loop()

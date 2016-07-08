@@ -3,7 +3,7 @@ import sys
 import zmq
 
 
-class ZMQChatDisplay(object):
+class ClientDisplay(object):
 
     def __init__(self, server_host, server_port):
         self.server_host = server_host
@@ -44,5 +44,5 @@ def parse_args():
 
 if '__main__' == __name__:
     args = parse_args()
-    display = ZMQChatDisplay(args.hostname, args.port)
+    display = ClientDisplay(args.hostname, args.port)
     display.start_main_loop()
