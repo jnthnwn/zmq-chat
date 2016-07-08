@@ -11,8 +11,10 @@ def main(stdscr):
 
     # set up a window that takes up the top half of the screen
     # and a window that takes up the bottom half
-    topwin = curses.newwin(curses.LINES-3, curses.COLS, 0, 0)
-    bottomwin = curses.newwin(3, curses.COLS, curses.LINES-3, 0)
+    #topwin = curses.newwin(curses.LINES-3, curses.COLS, 0, 0)
+    topwin = stdscr.subpad(curses.LINES - 3, curses.COLS, 0, 0)
+    topwin.scrollok(1)
+    bottomwin = curses.newwin(3, curses.COLS, curses.LINES - 3, 0)
 
     # update the screen contents
     stdscr.refresh()
@@ -20,7 +22,7 @@ def main(stdscr):
     # associate the colour pair above with the 'top half' window
     topwin.bkgd(' ', curses.color_pair(1))
     # draw a box in it using the nice default chars
-    topwin.box(0, 0)
+    topwin.box(0, 20)
     topwin.refresh()
 
     # do similarly for the bottom window
@@ -30,9 +32,8 @@ def main(stdscr):
         bottomwin.box(0, 0)
         bottomwin.move(1, 1)
         s = bottomwin.getstr()
-        topwin.clear()
-        topwin.addstr(1, 1, s)
-        topwin.box(0, 0)
+        topwin.scroll(1)
+        topwin.box(0, 20)
         topwin.refresh()
         bottomwin.refresh()
 
