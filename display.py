@@ -19,9 +19,9 @@ class ClientDisplay(object):
         self.display_sock.connect(connect_string)
 
     def get_update(self):
-        reply = self.display_sock.recv_multipart()
-        user, message = [s.decode() for s in reply]
-        print('{}: {}'.format(user, message))
+        data = self.display_sock.recv_json()
+        username, message = data['username'], data['message']
+        print('{}: {}'.format(username, message))
 
     def start_main_loop(self):
         self.connect_to_server()

@@ -24,23 +24,26 @@ class Server(object):
             self.display_interface, self.display_port)
         self.display_sock.bind(display_bind_string)
 
-    def get_message_with_identity(self):
-        parts = self.chat_sock.recv_multipart()
-        print(parts)
-        identity, message = [s.decode() for s in parts]
-        return [identity, message]
+    def get_message_with_username(self):
+        data = self.chat_sock.recv_json()
+        print(data)
+        username = data['username']
+        message = data['message']
+        return [username, message]
 
-    def update_displays(self, identity, message):
-        parts = [identity, message]
-        parts = [bytes(s, 'utf-8') for s in parts]
+    def update_displays(self, username, message):
+        data = {
+            'username' : username,
+            'message' : message,
+        }
         self.chat_sock.send(b'\x00')
-        self.display_sock.send_multipart(parts)
+        self.display_sock.send_json(data)
 
     def start_main_loop(self):
         self.bind_ports()
         while True:
-            identity, message = self.get_message_with_identity()
-            self.update_displays(identity, message)
+            username, message = self.get_message_with_username()
+            self.update_displays(username, message)
 
 
 def parse_args():

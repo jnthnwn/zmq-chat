@@ -20,10 +20,11 @@ class ClientChat(object):
         self.chat_sock.connect(connect_string)
 
     def reconnect_to_server(self):
+        self.poller.unregister(self.chat_sock)
         self.chat_sock.setsockopt(zmq.LINGER, 0)
         self.chat_sock.close()
-        self.poller.unregister(self.chat_sock)
         self.connect_to_server()
+        self.register_with_poller()
 
     def register_with_poller(self):
         self.poller.register(self.chat_sock, zmq.POLLIN)
@@ -31,15 +32,18 @@ class ClientChat(object):
     def prompt_for_message(self):
         return input('> ')
 
-    def send_message(self, msg):
-        parts = [self.username, msg]
-        self.chat_sock.send_multipart([bytes(part, 'utf-8') for part in parts])
+    def send_message(self, message):
+        data = {
+            'username': self.username,
+            'message': message,
+        }
+        self.chat_sock.send_json(data)
 
     def get_reply(self):
-        return self.chat_sock.recv()
+        self.chat_sock.recv()
 
     def has_message(self):
-        events = dict(self.poller.poll(1000))
+        events = dict(self.poller.poll(3000))
         return events.get(self.chat_sock) == zmq.POLLIN
 
     def start_main_loop(self):
@@ -47,10 +51,10 @@ class ClientChat(object):
         self.register_with_poller()
 
         while True:
-            msg = self.prompt_for_message()
-            self.send_message(msg)
+            message = self.prompt_for_message()
+            self.send_message(message)
             if self.has_message():
-                reply = self.get_reply()
+                self.get_reply()
             else:
                 self.reconnect_to_server()
 
