@@ -1,17 +1,19 @@
 import argparse
 import configparser
 import sys
+import threading
 import zmq
 
 
 class ClientChat(object):
 
-    def __init__(self, username, server_host, server_port):
+    def __init__(self, username, server_host, server_port, chat_pipe):
         self.username = username
         self.server_host = server_host
         self.server_port = server_port
         self.context = zmq.Context()
         self.chat_sock = None
+        self.chat_pipe = chat_pipe
         self.poller = zmq.Poller()
 
     def connect_to_server(self):
@@ -31,7 +33,7 @@ class ClientChat(object):
         self.poller.register(self.chat_sock, zmq.POLLIN)
 
     def prompt_for_message(self):
-        return input('> ')
+        return self.chat_pipe.recv_string()
 
     def send_message(self, message):
         data = {
@@ -58,6 +60,10 @@ class ClientChat(object):
                 self.get_reply()
             else:
                 self.reconnect_to_server()
+
+    def run(self):
+        thread = threading.Thread(target=self.start_main_loop)
+        thread.start()
 
 
 def parse_args():
