@@ -1,4 +1,5 @@
 import argparse
+import configparser
 import sys
 import zmq
 
@@ -32,12 +33,9 @@ class ClientDisplay(object):
 def parse_args():
     parser = argparse.ArgumentParser(description='Run the chat display')
 
-    parser.add_argument('hostname',
+    parser.add_argument('--config-file',
                         type=str,
-                        help='hostname of the chat server')
-    parser.add_argument('port',
-                        type=str,
-                        help='port used for the chat server display')
+                        help='path to an alternate config file, defaults to zmq-chat.cfg')
 
     return parser.parse_args()
 
@@ -45,7 +43,13 @@ def parse_args():
 if '__main__' == __name__:
     try:
         args = parse_args()
-        display = ClientDisplay(args.hostname, args.port)
+        config_file = args.config_file if args.config_file is not None else 'zmq-chat.cfg'
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        config = config['default']
+
+        display = ClientDisplay(config['server_host'], config['display_port'])
         display.start_main_loop()
+
     except KeyboardInterrupt:
         pass

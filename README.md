@@ -13,18 +13,21 @@ Get the server running with:
 git clone https://github.com/jnthnwn/zmq-chat.git
 cd zmq-chat
 pip install -r requirements.txt
-python3 server.py <chat_port> <display_port>
+python3 server.py
 ```
 
 Get the client running with:
 ```
-python3 client.py <server_host> <chat_port> <username>
+python3 client.py <username>
 ```
 
 Get the display running with:
 ```
-python3 display.py <server_host> <display_port>
+python3 display.py
 ```
 
-And you'll be able to do this:
+You can modify the configuration file zmq-chat.cfg as you wish,
+but the defaults will suffice for just playing around.
+
+Now you'll be able to do this:
 ![Chat client screenshot](/images/zmq_chat_screenshot.png)
