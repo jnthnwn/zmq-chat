@@ -60,6 +60,9 @@ def parse_args():
 
 
 if '__main__' == __name__:
-    args = parse_args()
-    server = Server('*', args.chat_port, '*', args.display_port)
-    server.start_main_loop()
+    try:
+        args = parse_args()
+        server = Server('*', args.chat_port, '*', args.display_port)
+        server.start_main_loop()
+    except KeyboardInterrupt:
+        pass

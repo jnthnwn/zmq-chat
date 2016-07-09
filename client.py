@@ -77,6 +77,9 @@ def parse_args():
 
 
 if '__main__' == __name__:
-    args = parse_args()
-    client = ClientChat(args.username, args.hostname, args.port)
-    client.start_main_loop()
+    try:
+        args = parse_args()
+        client = ClientChat(args.username, args.hostname, args.port)
+        client.start_main_loop()
+    except KeyboardInterrupt:
+        pass
