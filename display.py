@@ -1,9 +1,10 @@
 import argparse
+import configparser
 import sys
 import zmq
 
 
-class ZMQChatDisplay(object):
+class ClientDisplay(object):
 
     def __init__(self, server_host, server_port):
         self.server_host = server_host
@@ -19,9 +20,9 @@ class ZMQChatDisplay(object):
         self.display_sock.connect(connect_string)
 
     def get_update(self):
-        reply = self.display_sock.recv_multipart()
-        user, message = [s.decode() for s in reply]
-        print('{}: {}'.format(user, message))
+        data = self.display_sock.recv_json()
+        username, message = data['username'], data['message']
+        print('{}: {}'.format(username, message))
 
     def start_main_loop(self):
         self.connect_to_server()
@@ -32,17 +33,23 @@ class ZMQChatDisplay(object):
 def parse_args():
     parser = argparse.ArgumentParser(description='Run the chat display')
 
-    parser.add_argument('hostname',
+    parser.add_argument('--config-file',
                         type=str,
-                        help='hostname of the chat server')
-    parser.add_argument('port',
-                        type=str,
-                        help='port used for the chat server display')
+                        help='path to an alternate config file, defaults to zmq-chat.cfg')
 
     return parser.parse_args()
 
 
 if '__main__' == __name__:
-    args = parse_args()
-    display = ZMQChatDisplay(args.hostname, args.port)
-    display.start_main_loop()
+    try:
+        args = parse_args()
+        config_file = args.config_file if args.config_file is not None else 'zmq-chat.cfg'
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        config = config['default']
+
+        display = ClientDisplay(config['server_host'], config['display_port'])
+        display.start_main_loop()
+
+    except KeyboardInterrupt:
+        pass

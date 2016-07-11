@@ -1,8 +1,9 @@
 import argparse
+import configparser
 import zmq
 
 
-class ZMQChatServer(object):
+class Server(object):
 
     def __init__(self, chat_interface, chat_port, display_interface, display_port):
         self.chat_interface = chat_interface
@@ -24,39 +25,47 @@ class ZMQChatServer(object):
             self.display_interface, self.display_port)
         self.display_sock.bind(display_bind_string)
 
-    def get_message_with_identity(self):
-        parts = self.chat_sock.recv_multipart()
-        print(parts)
-        identity, message = [s.decode() for s in parts]
-        return [identity, message]
+    def get_message_with_username(self):
+        data = self.chat_sock.recv_json()
+        print(data)
+        username = data['username']
+        message = data['message']
+        return [username, message]
 
-    def update_displays(self, identity, message):
-        parts = [identity, message]
-        parts = [bytes(s, 'utf-8') for s in parts]
+    def update_displays(self, username, message):
+        data = {
+            'username' : username,
+            'message' : message,
+        }
         self.chat_sock.send(b'\x00')
-        self.display_sock.send_multipart(parts)
+        self.display_sock.send_json(data)
 
     def start_main_loop(self):
         self.bind_ports()
         while True:
-            identity, message = self.get_message_with_identity()
-            self.update_displays(identity, message)
+            username, message = self.get_message_with_username()
+            self.update_displays(username, message)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run the chat server')
 
-    parser.add_argument('chat_port',
+    parser.add_argument('--config-file',
                         type=str,
-                        help='port to expose for chat messages')
-    parser.add_argument('display_port',
-                        type=str,
-                        help='port to expose for display messages')
+                        help='path to an alternate config file, defaults to zmq-chat.cfg')
 
     return parser.parse_args()
 
 
 if '__main__' == __name__:
-    args = parse_args()
-    server = ZMQChatServer('*', args.chat_port, '*', args.display_port)
-    server.start_main_loop()
+    try:
+        args = parse_args()
+        config_file = args.config_file if args.config_file is not None else 'zmq-chat.cfg'
+        config = configparser.ConfigParser()
+        config.read(config_file)
+        config = config['default']
+                                
+        server = Server('*', config['chat_port'], '*', config['display_port'])
+        server.start_main_loop()
+    except KeyboardInterrupt:
+        pass
