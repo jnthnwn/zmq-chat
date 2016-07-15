@@ -7,6 +7,7 @@ import zmq
 
 from client import ClientChat
 from curses import wrapper
+from display import ClientDisplay
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run a chat client')
@@ -21,16 +22,18 @@ def parse_args():
 
     return parser.parse_args()
 
-def start_top_window(window):
-    color_to_use = 1
+def start_top_window(window, display):
+    window_lines, window_cols = window.getmaxyx()
+    bottom_line = window_lines - 1
+    window.bkgd(curses.A_NORMAL, curses.color_pair(2))
+    window.scrollok(1)
     while True:
         # alternate color pair used to visually check how frequently this loop runs
         # to tell when user input is blocking
-        color_to_use = (1 - color_to_use) + 2;
-        window.bkgd(curses.A_NORMAL, curses.color_pair(color_to_use))
-        window.box()
+        window.addstr(bottom_line, 1, display.recv_string())
+        window.move(bottom_line, 1)
+        window.scroll(1)
         window.refresh()
-        time.sleep(1)
 
 def start_bottom_window(window, chat_sender):
     # need to do sleep here...
@@ -46,7 +49,8 @@ def start_bottom_window(window, chat_sender):
         window.box()
         window.refresh()
         s = window.getstr(1, 1).decode('utf-8')
-        chat_sender.send_string(s)
+        if s is not None and s != "":
+            chat_sender.send_string(s)
 
 def main(stdscr):
     config_file = args.config_file if args.config_file is not None else 'zmq-chat.cfg'
@@ -61,6 +65,13 @@ def main(stdscr):
     client = ClientChat(args.username, config['server_host'],
                         config['chat_port'], receiver)
     client.run()
+
+    display_receiver = zmq.Context().instance().socket(zmq.PAIR)
+    display_receiver.bind("inproc://clientdisplay")
+    display_sender = zmq.Context().instance().socket(zmq.PAIR)
+    display_sender.connect("inproc://clientdisplay")
+    display = ClientDisplay(config['server_host'], config['display_port'], display_sender)
+    display.run()
 
     ### curses set up
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
@@ -77,7 +88,7 @@ def main(stdscr):
     top_pad = stdscr.subpad(division_line, window_width, 0, 0)
     bottom_pad = stdscr.subpad(window_height - division_line, window_width, division_line, 0)
     
-    top_thread = threading.Thread(target=start_top_window, args=(top_pad,))
+    top_thread = threading.Thread(target=start_top_window, args=(top_pad, display_receiver))
     top_thread.daemon = True
     top_thread.start()
 
