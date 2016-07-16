@@ -1,4 +1,4 @@
-# ZMQ Chat
+# ZMQ Chat 👏 👏 👏 
 This is a simple chat client/server implementation to explore the base ZeroMQ
 API and, later, try integrating some of the higher level patterns from the
 [zguide](http://zguide.zeromq.org/). Also utilizes the 
