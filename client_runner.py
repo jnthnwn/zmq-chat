@@ -36,10 +36,6 @@ def start_top_window(window, display):
         window.refresh()
 
 def start_bottom_window(window, chat_sender):
-    # need to do sleep here...
-    # if bottom window gets down to `window.getstr...` while top window is setting up,
-    # it registers a bunch of control characters (i.e. \x1b) as the user's input
-    time.sleep(0.1)
     window.bkgd(curses.A_NORMAL, curses.color_pair(2))
     window.clear()
     window.box()
@@ -51,6 +47,10 @@ def start_bottom_window(window, chat_sender):
         s = window.getstr(1, 1).decode('utf-8')
         if s is not None and s != "":
             chat_sender.send_string(s)
+        # need to do sleep here...
+        # if bottom window gets down to `window.getstr...` while top window is setting up,
+        # it registers a bunch of control characters as the user's input
+        time.sleep(0.005)
 
 def main(stdscr):
     config_file = args.config_file if args.config_file is not None else 'zmq-chat.cfg'
