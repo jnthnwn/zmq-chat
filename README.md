@@ -41,3 +41,6 @@ but the defaults will suffice for just playing around.
 Now you'll be able to do this:
 
 ![gif of chat clients talking](/images/asciicast.gif)
+
+Thanks to [asciinema2gif](https://github.com/tav/asciinema2gif) and 
+[asciinema](https://asciinema.org/) for this gif.
