@@ -61,6 +61,9 @@ class ClientChat(object):
 
     def run(self):
         thread = threading.Thread(target=self.start_main_loop)
+        # make sure this background thread is daemonized
+        # so that when user sends interrupt, whole program stops
+        thread.daemon = True
         thread.start()
 
 
