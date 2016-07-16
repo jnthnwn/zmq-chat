@@ -1,32 +1,30 @@
 # ZMQ Chat
 This is a simple chat client/server implementation to explore the base ZeroMQ
 API and, later, try integrating some of the higher level patterns from the
-[zguide](http://zguide.zeromq.org/).
+[zguide](http://zguide.zeromq.org/). Also utilizes the curses library to provide
+a text-based user interface.
 
 ### Try it out!
-At the moment, you'll have to start all three components in separate windows.
-There are plans to incorporate the `curses` library and have a nice text-based interface
-for the client text input and display. In the meantime...
 
-Get the server running with:
+Install the project (requires Python3 and pip):
 ```
 git clone https://github.com/jnthnwn/zmq-chat.git
 cd zmq-chat
-pip install -r requirements.txt
+pip3 install -r requirements.txt
+```
+
+Get the server running:
+```
 python3 server.py
 ```
 
-Get the client running with:
+Get your clients connected:
 ```
-python3 client.py <username>
-```
-
-Get the display running with:
-```
-python3 display.py
+python3 zmqchat.py <username>
 ```
 
-You can modify the configuration file `zmq-chat.cfg` as you wish,
+You can modify the configuration file `zmq-chat.cfg` to specify
+a particular server host or ports to use,
 but the defaults will suffice for just playing around.
 
 Now you'll be able to do this:
