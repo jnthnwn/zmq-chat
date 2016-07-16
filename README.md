@@ -29,4 +29,5 @@ a particular server host or ports to use,
 but the defaults will suffice for just playing around.
 
 Now you'll be able to do this:
-![Chat client screenshot](/images/zmq_chat_screenshot.png)
+
+![gif of chat clients talking](/images/asciicast.gif)
