@@ -1,7 +1,8 @@
 # ZMQ Chat
 This is a simple chat client/server implementation to explore the base ZeroMQ
 API and, later, try integrating some of the higher level patterns from the
-[zguide](http://zguide.zeromq.org/). Also utilizes the curses library to provide
+[zguide](http://zguide.zeromq.org/). Also utilizes the 
+[curses](https://docs.python.org/3/howto/curses.html) library to provide
 a text-based user interface.
 
 ### Try it out!
