@@ -52,7 +52,7 @@ def parse_args():
 
     parser.add_argument('--config-file',
                         type=str,
-                        help='path to an alternate config file, defaults to zmq-chat.cfg')
+                        help='path to an alternate config file, defaults to zmqchat.cfg')
 
     return parser.parse_args()
 
@@ -60,7 +60,7 @@ def parse_args():
 if '__main__' == __name__:
     try:
         args = parse_args()
-        config_file = args.config_file if args.config_file is not None else 'zmq-chat.cfg'
+        config_file = args.config_file if args.config_file is not None else 'zmqchat.cfg'
         config = configparser.ConfigParser()
         config.read(config_file)
         config = config['default']
