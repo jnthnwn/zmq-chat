@@ -78,6 +78,7 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
     # ensure that user input is echoed to the screen
     curses.echo()
+    curses.curs_set(0)
 
     window_height = curses.LINES
     window_width = curses.COLS
